@@ -1,0 +1,10 @@
+ack.vim
+fzf.vim
+gruvbox
+lightline.vim
+nerdtree
+vim-css-color
+vim-fugitive
+vim-gutentags
+vim-obsession
+vim-polyglot
