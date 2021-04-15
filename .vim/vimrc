@@ -1,0 +1,301 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Maintainer: 
+"    Andrey Sharikov - @sharombolla
+"
+" Sections:
+"    -> General
+"    -> VIM user interface
+"    -> Colors and Fonts
+"    -> Files and backups
+"    -> Git integrations
+"    -> Text, tab and indent related
+"    -> Searching and cope displaying
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Sets how many lines of history VIM has to remember
+set history=3000
+
+" enable vim features instead of strict vi compatibility
+set nocompatible
+
+" Enable filetype plugins
+filetype plugin on
+filetype indent on
+
+" Set to auto read when a file is changed from the outside
+set autoread
+
+" autosave buffer when switching between them
+set autowrite
+
+set splitbelow
+set splitright
+
+" cursor options
+
+augroup CursorLine
+    au!
+    au VimEnter * setlocal cursorline cursorcolumn
+    au WinEnter * setlocal cursorline cursorcolumn
+    au BufWinEnter * setlocal cursorline cursorcolumn
+    au WinLeave * setlocal nocursorline nocursorcolumn
+augroup END cursorcolumn      " highlight current column
+
+" With a map leader it's possible to do extra key combinations
+" like <leader>w saves the current file
+let mapleader = ","
+
+" yank to clipboard
+
+if has("clipboard")
+  set clipboard=unnamed " copy to the system clipboard
+
+  if has("unnamedplus") " X11 support
+   set clipboard+=unnamedplus
+  endif
+endif
+
+" yank file name to system clipboard
+" Copy relative path to clipboard
+nmap <silent> cp :let @+ = expand("%:p")<CR>
+nmap <silent> crp :let @+ = expand("%")<CR>
+nmap <silent> crpl :let @+ = expand("%") . ":" . line(".")<CR>
+
+" Spell checking
+
+set spell
+set spelllang=en
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => VIM user interface
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" set recursive file search down in the subfolders
+set path+=**
+
+" Turn on the Wild menu
+set wildmenu
+
+" Ignore compiled files
+set wildignore=*.o,*~,*.pyc
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+set wildignore+=*/node_modules/*
+set wildignore+=*/public/*
+
+"Always show current position
+set ruler
+
+" Ignore case when searching
+set ignorecase
+
+" When searching try to be smart about cases 
+set smartcase
+
+" Highlight search results
+set hlsearch
+
+" Makes search act like search in modern browsers
+set incsearch 
+
+" map // for noh and rerender
+map // :noh<CR>
+
+" Don't redraw while executing macros (good performance config)
+set lazyredraw 
+
+" For regular expressions turn magic on
+set magic
+
+" Show matching brackets when text indicator is over them
+set showmatch 
+
+" How many tenths of a second to blink when matching brackets
+set mat=2
+
+" No annoying sound on errors
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+
+" Add a bit extra margin to the left
+set foldcolumn=0
+
+" show hybride line numbers
+set number relativenumber
+
+
+" absolute width of netrw window
+let g:netrw_winsize = -28
+
+" tree-view
+let g:netrw_liststyle = 3
+
+" sort is affecting only: directories on the top, files below
+let g:netrw_sort_sequence = '[\/]$,*'
+
+" open file in vertical split
+let g:netrw_browse_split = 4
+" open splits to the right
+let g:netrw_altv=1
+let g:netrw_list_hide=netrw_gitignore#Hide()
+let g:netrw_list_hide.= ',\(^\|\s\s)\zs\.\S\+'
+
+let g:netrw_fastbrowse=0
+let g:netrw_keepdir=0
+
+" NERDtree configs
+" simple mappings
+nnoremap <Leader>e :NERDTreeToggle<CR>
+nnoremap <Leader>p :NERDTreeFind<CR>
+
+" Automatically delete the buffer of the file you just deleted with NerdTree
+let NERDTreeAutoDeleteBuffer = 1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Colors and Fonts
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+syntax on
+
+colorscheme gruvbox 
+set background=dark
+set termguicolors
+set colorcolumn=100
+
+" gruvbox them settings
+let g:gruvbox_italic = 1
+
+" Set utf8 as standard encoding and en_US as the standard language
+set encoding=utf8
+
+" Use Unix as the standard file type
+set ffs=unix,dos,mac
+
+" Status line config
+set laststatus=2
+set statusline+=%{gutentags#statusline()}
+set statusline+=%{ObsessionStatus()}
+set noshowmode
+let g:lightline = {
+      \ 'colorscheme': 'gruvbox',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'fugitive#head'
+      \ },
+      \ }
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" => Files, backups and undo
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Turn backup off, since most stuff is in SVN, git et.c anyway...
+set nobackup
+set nowb
+set noswapfile
+
+set backupdir=~/.vim/.backup//
+set directory=~/.vim/.swp//
+set undodir=~/.vim/.undo//
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Git integrations 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Git-fugitive settings
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Text, tab and indent related
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Use spaces instead of tabs
+set expandtab
+
+" Be smart when using tabs ;)
+set smarttab
+
+" 1 tab == 2 spaces
+set shiftwidth=2
+set tabstop=2
+
+" Linebreak on 100 characters
+set lbr
+set tw=100
+
+set ai "Auto indent
+set si "Smart indent
+set wrap "Wrap lines
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Searching and cope displaying
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" FZF common settings
+set rtp+=/usr/local/opt/fzf
+
+let g:fzf_preview_window = ['up:40%:hidden', 'ctrl-/']
+" Key maps for searching
+
+" File finder
+nmap <Leader>f :GFiles<CR> 
+nmap <Leader>F :Files<CR>
+
+" Buffer finder
+nmap <Leader>b :Buffers<CR>
+nmap <Leader>h :History<CR>
+
+" Tags finder
+" Here I've mapped <Leader>t to search for tags in current buffer, and <Leader>T to search for tags across project.
+nmap <Leader>t :BTags<CR>
+nmap <Leader>T :Tags<CR>
+
+" Line Finder
+" Here I've mapped <Leader>l to search for lines in current buffer, <Leader>L to search for lines in loaded buffers, and <Leader>' to search for marked lines.
+nmap <Leader>l :BLines<CR>
+nmap <Leader>L :Lines<CR>
+nmap <Leader>' :Marks<CR>
+
+" Project Finder
+nmap <Leader>r :Rg<Space>
+
+" Help Finder
+nmap <Leader>H :Helptags!<CR>
+
+" Fuzzy search defined commands, whether they be user defined, plugin defined, or native commands:
+nmap <Leader>C :Commands<CR>
+
+" Fuzzy search through :command and /search history:
+nmap <Leader>: :History:<CR>
+nmap <Leader>/ :History/<CR>
+
+" Fuzzy search key mappings, which is great for checking against current mappings before defining a new one:
+nmap <Leader>M :Maps<CR>
+
+" Fuzzy search filetype syntaxes, and hit Enter on a result to set that syntax on the current buffer:
+nmap <Leader>s :Filetypes<CR>
+
+" Navigate quickfix list with ease
+nnoremap <silent> [q :cprevious<CR>
+nnoremap <silent> ]q :cnext<CR>
+
+" ACK.vim settings
+
+" Use ripgrep for searching ⚡️
+" Options include:
+" --vimgrep -> Needed to parse the rg response properly for ack.vim
+" --type-not sql -> Avoid huge sql file dumps as it slows down the search
+" --smart-case -> Search case insensitive if all lowercase pattern, Search case sensitively otherwise
+let g:ackprg = 'rg --vimgrep --type-not sql --smart-case'
+
+" Any empty ack search will search for the work the cursor is on
+let g:ack_use_cword_for_empty_search = 1
+
+" Don't jump to first match
+cnoreabbrev Ack Ack!
+
+" Maps <leader>/ so we're ready to type the search keyword
+nnoremap <Leader>/ :Ack!<Space>
